@@ -98,6 +98,13 @@ jobs:
         git commit -m "⏱️ $(date +"%Y年%m月%d日-%H时%M分") GitHub Actions定时更新"
         git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ env.PAGE_BRANCH }}
 
+    - name: Purge jsDelivr cache
+      continue-on-error: true
+      run: |
+        for f in all.json link.json errors.json; do
+          curl -sS "https://purge.jsdelivr.net/gh/${{ github.repository }}@${{ env.PAGE_BRANCH }}/$f" > /dev/null
+        done
+
     - name: Delete Workflow Runs
       uses: Mattraks/delete-workflow-runs@v2
       with:
